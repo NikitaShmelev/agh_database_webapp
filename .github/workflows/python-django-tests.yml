@@ -1,0 +1,76 @@
+name: Django Tests with Pytest and Coverage
+
+on:
+  push:
+    branches:
+      - main  # Trigger the pipeline on push to the 'main' branch
+  pull_request:
+    branches:
+      - main  # Trigger on PR to the 'main' branch
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:13  # Using Postgres 13 image
+        env:
+          POSTGRES_DB: testdb
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        # Wait for PostgreSQL service to be ready
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      # Check out the repository code
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Set up Python environment
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+
+      # Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-django pytest-cov
+
+      # Set environment variables for Django settings
+      - name: Set environment variables for Django settings
+        run: echo "DJANGO_SETTINGS_MODULE=myproject.settings" >> $GITHUB_ENV
+
+      # Wait for PostgreSQL to be ready
+      - name: Wait for PostgreSQL to be ready
+        run: sleep 10
+
+      # Run the tests with coverage
+      - name: Run Tests with Coverage
+        run: |
+          pytest --maxfail=1 --disable-warnings -v --cov=myproject --cov-report=xml
+
+      # Upload coverage report as an artifact (Optional)
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-report
+          path: coverage.xml
+
+      # Optional: Check coverage percentage
+      - name: Check coverage
+        run: |
+          COVERAGE=$(pytest --cov=myproject --cov-report=term-missing | tail -n 10 | grep -oP '\d+(?=%)' || true)
+          if [ "$COVERAGE" -lt 80 ]; then
+            echo "Coverage is less than 80% (currently $COVERAGE%)"
+            exit 1
+          fi

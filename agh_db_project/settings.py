@@ -27,21 +27,27 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+LOCAL_APPS = [
+    'users.apps.UsersConfig',
+    'students.apps.StudentsConfig',
+    'professors.apps.ProfessorsConfig',
+    'profiles.apps.ProfilesConfig',
+]
 
-# Application definition
-
-INSTALLED_APPS = [
+DJANGO_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'users.apps.UsersConfig',
-    'students.apps.StudentsConfig',
-    'professors.apps.ProfessorsConfig',
-    'profiles.apps.ProfilesConfig',
 ]
+
+EXTERNAL_APPS = [
+    'django_bootstrap5',
+]
+# Application definition
+INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + EXTERNAL_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -122,6 +128,21 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [BASE_DIR / 'templates'],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

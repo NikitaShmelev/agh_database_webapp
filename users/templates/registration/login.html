@@ -1,14 +1,28 @@
 {% extends "base.html" %}
+{% load django_bootstrap5 %}
+
 {% block content %}
     <h2>Login</h2>
-    <form method="post">
+    <form method="post" class="form">
         {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Login" />
+
+        <div class="mb-3">
+            {% bootstrap_field form.username %}
+        </div>
+
+        <div class="mb-3">
+            {% bootstrap_field form.password %}
+        </div>
+
+        <div class="mb-3">
+            <input type="submit" value="Login" class="btn btn-primary" />
+        </div>
+
         <input type="hidden" name="next" value="{% url 'dashboard' %}" />
     </form>
+
     <p>
-        <a href="{% url 'password_reset' %}">Forgot your password?</a>
-        <a href="{% url 'dashboard' %}">Back to dashboard</a>
+        <a href="{% url 'password_reset' %}" class="btn btn-link">Forgot your password?</a>
+        <a href="{% url 'dashboard' %}" class="btn btn-link">Back to dashboard</a>
     </p>
 {% endblock content %}
