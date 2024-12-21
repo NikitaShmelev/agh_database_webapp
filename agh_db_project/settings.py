@@ -37,7 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'users.apps.UsersConfig'
+    'users.apps.UsersConfig',
+    'students.apps.StudentsConfig',
+    'professors.apps.ProfessorsConfig',
+    'profiles.apps.ProfilesConfig',
 ]
 
 MIDDLEWARE = [
@@ -100,7 +103,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 LOGIN_REDIRECT_URL = "dashboard"
-
+AUTH_USER_MODEL = 'users.CustomUser'
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 # Internationalization
