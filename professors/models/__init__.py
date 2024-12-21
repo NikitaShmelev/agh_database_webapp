@@ -1,3 +1,3 @@
 from .professors import ProfessorProfile
 
-__all__ = ['ProfessorProfile']
+__all__ = ["ProfessorProfile"]
